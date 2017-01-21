@@ -1,0 +1,68 @@
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+
+  MSG1 DB 'TYPE A CHARACTER: $'
+  MSG2 DB 0DH,0AH,'THE ASCII CODE OF '
+  CHAR DB ?,' IN BINARY IS $'
+  MSG3 DB 0DH,0AH,'THE NUMBER OF 1 BITS IS '
+  BITS DB 0,'$'
+
+.CODE
+  MAIN PROC
+
+    MOV AX,@DATA
+    MOV DS,AX
+
+    LEA DX,MSG1
+    MOV AH,9
+    INT 21H
+
+    MOV AH,1
+    INT 21H
+    MOV CHAR,AL
+
+    LEA DX,MSG2
+    MOV AH,9
+    INT 21H
+
+    MOV AH,2
+    MOV CX,8
+    MOV BL,CHAR
+    MOV BH,0
+
+
+
+ TOP:
+    ROL BL,1
+    JC ONE
+    JNC ZERO
+
+ ONE:
+    INC BH
+    MOV DL,'1'
+    JMP DISPLAY
+
+ ZERO:
+    MOV DL,'0'
+
+ DISPLAY:
+    INT 21H
+
+    LOOP TOP
+
+    OR BH,30H
+    MOV BITS,BH
+
+    LEA DX,MSG3
+    MOV AH,9
+    INT 21H
+
+    MOV AH,4CH
+    INT 21H
+
+  MAIN ENDP
+    END MAIN
+
+
